@@ -1,0 +1,31 @@
+####################################################################################
+#
+# Z-score (standardize) duration and intensity measures for each subject
+#
+#
+# MC 4/27/20
+#
+####################################################################################
+
+sub_ids = data$Subject
+n_subs = length(sub_ids)
+data["Subject_mean_intensity"] = NA
+data["Subject_sd_intensity"] = NA
+data["Subject_mean_duration"] = NA
+data["Subject_sd_duration"] = NA
+for(s in 1:n_subs){
+      curr_sub = sub_ids[s]
+      curr_sub_indices = which(data$Subject == curr_sub)
+      # (1) Intensity 
+      data$Subject_mean_intensity[curr_sub_indices] = mean(data$Intensity[curr_sub_indices], na.rm = TRUE)
+      data$Subject_sd_intensity[curr_sub_indices] = sd(data$Intensity[curr_sub_indices], na.rm = TRUE)
+      # (2) Vowel duration 
+      data$Subject_mean_duration[curr_sub_indices] = mean(data$End[curr_sub_indices], na.rm = TRUE)
+      data$Subject_sd_duration[curr_sub_indices] = sd(data$End[curr_sub_indices], na.rm = TRUE)
+}#endfor sub loop
+
+###### Z-SCORE ####### 
+data["Intensity.z"] = NA
+data["Dur.z"] = NA
+data$Intensity.z = (data$Intensity - data$Subject_mean_intensity) / data$Subject_sd_intensity
+data$Dur.z = (data$End - data$Subject_mean_duration) / data$Subject_sd_duration
