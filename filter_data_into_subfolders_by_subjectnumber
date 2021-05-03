@@ -1,0 +1,49 @@
+######################################################
+#
+# Filter male/female files into separate folders
+#
+#
+#
+# MC 5/3/2021
+#
+######################################################
+cd = "/Desktop/DataDirectory/"
+setwd(cd)
+preexp_dat= read.csv("preexposure_data.csv", header = TRUE)
+
+female_subs = subset(preexp_dat, Gender == "Female")
+female_sub_ids = unique(female_subs$SubjectNum)
+
+male_subs = subset(preexp_dat, Gender == "Male")
+male_sub_ids = unique(male_subs$SubjectNum)
+
+########## DEFINE FILES TO LOOP THRU (main directory) & WHERE TO COPY THEM TO #####
+main_file_dir = "/Desktop/IndividualDataFileDirectory/"
+main_file_list = list.files(main_file_dir)
+n_files = length(main_file_list)
+
+female_dir = "/Desktop/OrganizedDataFileDirectory/female/"
+male_dir = "/Desktop/OrganizedDataFileDirectory/male/"
+
+# Loop through all files in the main directory; if a match for either gender, copies into that folder
+for(irow in 1:n_files){
+  curr_filename = main_file_list[irow]
+  curr_subid = substr(curr_filename, 1, 3)
+  currfilepath = sprintf("%s%s", main_file_dir, curr_filename)
+  
+  if(curr_subid %in% female_sub_ids){
+    curr_femaleoutputpath = sprintf("%s%s", female_dir, curr_filename)
+    
+    file.copy(currfilepath, curr_femaleoutputpath)
+    
+  }else if(curr_subid %in% male_sub_ids){
+    curr_maleoutputpath = sprintf("%s%s", male_dir, curr_filename)
+    file.copy(currfilepath, curr_maleoutputpath)
+    
+  }# if
+  
+    
+}#endfor row loop
+
+
+
