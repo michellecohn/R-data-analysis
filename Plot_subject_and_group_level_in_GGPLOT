@@ -1,0 +1,38 @@
+library(plyr)
+library(ggplot2)
+
+# Summarize across conditions
+combined_summary_dat <- ddply(accuracy_data,.(Condition, Block, SpeakingStyle),summarize,
+                                       Mean=mean(na.omit(Accuracy)),
+                                       Err=sqrt(var(na.omit(Accuracy))/length(na.omit(Accuracy))))
+  
+# Show individual points
+subject_summary_dat <- ddply(accuracy_data,.(Condition, Block, SpeakingStyle, Subject),summarize,
+                                       Mean=mean(na.omit(Accuracy)),
+                                       Err=sqrt(var(na.omit(Accuracy))/length(na.omit(Accuracy))))
+  
+##### INDIVID SUB AVERAGES + BAR PLOT
+color_palette_CURR = c("orange", "deepskyblue3")
+combined_plot <- ggplot(subject_summary_dat, aes(x=SpeakingStyle, y=Mean, 
+                  color = Condition, group = Condition, shape =Condition, fill = Condition))+
+    geom_bar(position = position_dodge(), stat="identity", color = "black", data = combined_summary_dat)+
+   
+    geom_point(size=0.15, position = position_dodge(width = 1), shape = 21)+
+    
+    geom_errorbar(data = combined_summary_dat, aes(ymin=Mean-Err, ymax=Mean+Err), color = "black",
+                  width=.2,                    # Width of the error bars
+                  position=position_dodge(width=1))+   # coord_cartesian(ylim=c(0.25, 0.65)) +
+        
+    scale_color_manual(values=c("darkorange3", "deepskyblue4"))+# +
+    scale_fill_manual(values=c("orange", "deepskyblue3"))+ 
+    
+    ggtitle("Combined data")+
+    ylab("Accuracy") + facet_wrap(~Block, nrow = 1)
+    
+ combined_plot = combined_plot + theme_bw()+theme(text=element_text(size=14))
+ combined_plot
+  
+plot_width = 6
+plot_height = 4
+ggsave(file ="accuracy_plot.jpeg", combined_plot, width = plot_width, height = plot_height, dpi = 300)
+  
