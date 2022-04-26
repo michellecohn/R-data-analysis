@@ -34,5 +34,5 @@ combined_plot <- ggplot(subject_summary_dat, aes(x=SpeakingStyle, y=Mean,
   
 plot_width = 6
 plot_height = 4
-ggsave(file ="accuracy_plot.jpeg", combined_plot, width = plot_width, height = plot_height, dpi = 300)
+ggsave(file ="accuracy_plot.jpeg", combined_plot, width = plot_width, height = plot_height, dpi = 600)
   
