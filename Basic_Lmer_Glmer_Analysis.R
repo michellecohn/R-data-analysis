@@ -59,7 +59,7 @@ accuracy_summarized <- ddply(dat,.(Condition, Gender),summarize,
                             Mean=mean(na.omit(Accuracy)),
                             Err=sqrt(var(na.omit(Accuracy))/length(na.omit(Accuracy))))
 
-accuracy_plot <- ggplot(mask.data.combined, aes(x=Condition, y=Mean, shape=Gender, group=Gender, color=Gender))+
+accuracy_plot <- ggplot(accuracy_summarized, aes(x=Condition, y=Mean, shape=Gender, group=Gender, color=Gender))+
   geom_point(size=6)+
   geom_line(aes(linetype=Gender), size=.9)+
   geom_errorbar(aes(ymin=Mean-Err, ymax=Mean+Err), width=.2)+
